@@ -1,5 +1,5 @@
 // OpenLayers読み込み
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, VFC } from "react";
 import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
@@ -8,7 +8,13 @@ import { fromLonLat } from "ol/proj";
 import "ol/ol.css";
 import styles from "./MapPane.module.css";
 
-export const MapPane = () => {
+type Props = {
+  lon: number;
+  lat: number;
+};
+
+export const MapPane: VFC<Props> = (props) => {
+  const { lon, lat } = props;
   let container: any = useRef(null);
 
   useEffect(() => {
@@ -18,9 +24,9 @@ export const MapPane = () => {
       layers: [
         new TileLayer({
           source: new XYZ({
-            url: "https://api.maptiler.com/maps/jp-mierune-streets/256/{z}/{x}/{y}.png?key=nI5a7WfyyIpnSEA8D8MS",
+            url: "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
             attributions:
-              '<a href="https://maptiler.jp/" target="_blank">© MIERUNE</a> <a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+              'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ',
             attributionsCollapsible: false,
             tileSize: [256, 256],
             minZoom: 0,
@@ -29,11 +35,11 @@ export const MapPane = () => {
         }),
       ],
       view: new View({
-        center: fromLonLat([130.853, 33.571]), // 添田町
+        center: fromLonLat([lon, lat]),
         zoom: 14,
       }),
     });
-  }, [container]);
+  }, [container, lon, lat]);
 
   return <div className={styles.map} ref={(e) => (container = e)} />;
 };
