@@ -1,5 +1,5 @@
 // OpenLayers読み込み
-import React, { Component } from "react";
+import { useEffect, useRef } from "react";
 import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
@@ -8,14 +8,13 @@ import { fromLonLat } from "ol/proj";
 import "ol/ol.css";
 import styles from "./MapPane.module.css";
 
-class MapPane extends Component {
-  map: any;
-  container: any;
+export const MapPane = () => {
+  let container: any = useRef(null);
 
-  componentDidMount() {
-    // マップ設定
-    this.map = new Map({
-      target: this.container,
+  useEffect(() => {
+    console.log(container);
+    new Map({
+      target: container,
       layers: [
         new TileLayer({
           source: new XYZ({
@@ -34,11 +33,7 @@ class MapPane extends Component {
         zoom: 14,
       }),
     });
-  }
+  }, [container]);
 
-  render() {
-    return <div className={styles.map} ref={(e) => (this.container = e)} />;
-  }
-}
-
-export default MapPane;
+  return <div className={styles.map} ref={(e) => (container = e)} />;
+};

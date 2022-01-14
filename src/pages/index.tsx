@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import MapPane from "src/components/MapPane";
+import { MapPane } from "src/components/MapPane";
 
 const Home: NextPage = () => {
   return (
