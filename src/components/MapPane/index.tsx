@@ -6,20 +6,29 @@ import TileLayer from "ol/layer/Tile";
 import XYZ from "ol/source/XYZ";
 import { fromLonLat } from "ol/proj";
 import "ol/ol.css";
-import styles from "./MapPane.module.css";
+import classes from "./MapPane.module.css";
 
 type Props = {
   lon: number;
   lat: number;
+  zoom: number;
+  width: number;
+  height: number;
 };
 
 export const MapPane: VFC<Props> = (props) => {
-  const { lon, lat } = props;
+  const { lon, lat, zoom, width, height } = props;
   let container: any = useRef(null);
+
+  // TODO イマイチ
+  const styles = {
+    width: width,
+    height: height,
+  };
 
   useEffect(() => {
     console.log(container);
-    new Map({
+    let map = new Map({
       target: container,
       layers: [
         new TileLayer({
@@ -36,10 +45,13 @@ export const MapPane: VFC<Props> = (props) => {
       ],
       view: new View({
         center: fromLonLat([lon, lat]),
-        zoom: 14,
+        zoom,
       }),
     });
-  }, [container, lon, lat]);
+    map.setSize([width, height]);
+  }, [lon, lat, zoom, width, height]);
 
-  return <div className={styles.map} ref={(e) => (container = e)} />;
+  return (
+    <div className={classes.map} style={styles} ref={(e) => (container = e)} />
+  );
 };
