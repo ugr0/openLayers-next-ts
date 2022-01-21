@@ -89,7 +89,7 @@ const MapPage: NextPage = () => {
     <>
       <Map center={fromLonLat(center)} zoom={zoom}>
         <Layers>
-          {/* <TileLayer source={osm} zIndex={0} /> */}
+          <TileLayer source={osm} zIndex={0} />
           {showLayer1 ? (
             <VectorLayer
               source={
