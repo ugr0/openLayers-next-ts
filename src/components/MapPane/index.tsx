@@ -1,11 +1,17 @@
-// OpenLayers読み込み
 import { useEffect, useRef, VFC } from "react";
+
+// OpenLayers読み込み
 import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
-import XYZ from "ol/source/XYZ";
+import OSM from "ol/source/OSM";
+import HeatmapLayer from "ol/layer/Heatmap";
 import { fromLonLat } from "ol/proj";
 import "ol/ol.css";
+import VectorSource from "ol/source/Vector";
+import Feature from "ol/Feature";
+import Point from "ol/geom/Point";
+
 import classes from "./MapPane.module.css";
 
 type Props = {
@@ -27,22 +33,28 @@ export const MapPane: VFC<Props> = (props) => {
   };
 
   useEffect(() => {
-    console.log(container);
-    let map = new Map({
-      target: container,
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            url: "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-            attributions:
-              'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ',
-            attributionsCollapsible: false,
-            tileSize: [256, 256],
-            minZoom: 0,
-            maxZoom: 18,
+    const osm = new TileLayer({
+      source: new OSM(),
+    });
+
+    const hml = new HeatmapLayer({
+      source: new VectorSource({
+        features: [
+          new Feature({
+            geometry: new Point(fromLonLat([130.853, 33.571])),
           }),
-        }),
-      ],
+          new Feature({
+            geometry: new Point(fromLonLat([130.686, 33.635])),
+          }),
+        ],
+      }),
+      blur: 50,
+      radius: 40,
+    });
+
+    const map = new Map({
+      target: container,
+      layers: [osm, hml],
       view: new View({
         center: fromLonLat([lon, lat]),
         zoom,
