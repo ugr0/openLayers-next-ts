@@ -1,10 +1,18 @@
 {
   "soeda": {
     "lon": 130.853,
-    "lat": 33.571
+    "lat": 33.571,
+    "opacity": 1,
+    "radius": 30,
+    "blur": 0,
+    "value": 0.5
   },
   "iizuka": {
     "lon": 130.686,
-    "lat": 33.635
+    "lat": 33.635,
+    "opacity": 1,
+    "radius": 30,
+    "blur": 0,
+    "value": 1
   }
 }
