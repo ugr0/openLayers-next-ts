@@ -11,7 +11,6 @@ const Home: NextPage = () => {
         <h1>Open Layers Demo</h1>
         <MapPane {...MapData.soeda} zoom={10} width={800} height={600} />
       </div>
-      <br />
     </div>
   );
 };

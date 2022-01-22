@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, VFC } from "react";
+import { useCallback, useEffect, useRef, useState, VFC, useMemo } from "react";
 
 // OpenLayers読み込み
 import Map from "ol/Map";
@@ -12,7 +12,6 @@ import VectorSource from "ol/source/Vector";
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 
-import classes from "./MapPane.module.css";
 import MapData from "src/data/mapData.json";
 import { Slider } from "@mui/material";
 
@@ -26,25 +25,7 @@ type Props = {
 
 export const MapPane: VFC<Props> = (props) => {
   const { lon, lat, zoom, width, height } = props;
-  const [blur, setBlur] = useState(20);
-  const [radius, setRadius] = useState(20);
   let container: any = useRef(null);
-
-  // ヒートマップのblurハンドラ
-  const handleChangeBlur = useCallback(
-    (event: Event, newValue: number | number[]) => {
-      setBlur(newValue as number);
-    },
-    []
-  );
-
-  // ヒートマップのradiusハンドラ
-  const handleChangeRadius = useCallback(
-    (event: Event, newValue: number | number[]) => {
-      setRadius(newValue as number);
-    },
-    []
-  );
 
   // OpenStreetMap Layer
   const osm = new TileLayer({
@@ -75,7 +56,25 @@ export const MapPane: VFC<Props> = (props) => {
       })
     : undefined;
 
+  // ヒートマップのblurハンドラ
+  const handleChangeBlur = useCallback(
+    (event: Event, newValue: number | number[]) => {
+      hml?.setBlur(newValue as number);
+    },
+    []
+  );
+
+  // ヒートマップのradiusハンドラ
+  const handleChangeRadius = useCallback(
+    (event: Event, newValue: number | number[]) => {
+      hml?.setRadius(newValue as number);
+    },
+    []
+  );
+
+  // TODO mapが再レンダリングでたくさん表示されてしまう。
   useEffect(() => {
+    console.log("UseEffectが呼ばれました");
     const map = process.browser
       ? new Map({
           target: container,
@@ -87,33 +86,33 @@ export const MapPane: VFC<Props> = (props) => {
             minZoom: 8,
           }),
         })
-      : null;
+      : undefined;
+
     map?.addLayer(hml as HeatmapLayer);
-  }, []);
+    console.log("mapが作られました");
+  });
+
+  console.log("レンダリングをする");
 
   return (
     <>
-      <div
-        className={classes.map}
-        style={{ width, height }}
-        ref={(e) => (container = e)}
-      />
+      <div style={{ width, height }} ref={(e) => (container = e)} />
 
-      <h1>半径とぼやけ調整(TODO)</h1>
-      <p>blur: {blur}</p>
+      <h1>半径とぼやけ調整 (TODO)</h1>
+      <p>blur: </p>
       <Slider
         aria-label="blur"
         valueLabelDisplay="auto"
-        value={blur}
+        defaultValue={20}
         onChange={handleChangeBlur}
         min={1}
         max={50}
       />
-      <p>radius: {radius}</p>
+      <p>radius: </p>
       <Slider
         aria-label="radius"
         valueLabelDisplay="auto"
-        value={radius}
+        defaultValue={20}
         onChange={handleChangeRadius}
         min={1}
         max={50}
